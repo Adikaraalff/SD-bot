@@ -18,7 +18,7 @@ const {
     Brainly,
     Jsholat,
     Translate,
-    Downloader
+    Downloader,
 } = require('./../lib')
 
 
@@ -119,7 +119,7 @@ const MessageHandler = async (client = new Client(), message) => {
                         }
                     }
 
-                    await client.reply(from, `Add member by *aex-bot*\n\nTotal number: ${datamember.length}\nDelay: 20s.`, id)
+                    await client.reply(from, `Add member by *SD-bot*\n\nTotal number: ${datamember.length}\nDelay: 5s.`, id)
 
                     loop(0)
                 }
@@ -202,7 +202,7 @@ const MessageHandler = async (client = new Client(), message) => {
             case 'kickme': 
                 // client.reply(from, 'Maaf fitur di non-aktifkan sementara.', id)
                 if (isGroupMsg && isGroupAdmins) {
-                    client.sendText(from, `Invite kembali aex jika dirasa dibutuhkan yah~`)
+                    client.sendText(from, `Invite kembali SD-bot jika dirasa dibutuhkan yah~`)
                         .then(() => {
                             client.leaveGroup(groupId)
                         })
@@ -281,8 +281,8 @@ const MessageHandler = async (client = new Client(), message) => {
                 Ytdl(nonOption)
                     .then(data => {
                         const { title, url_audio, minute } = data
-                        if (minute >= 15) {
-                            client.reply(from, `minimal durasi 15menit.`, id)
+                        if (minute >= 1) {
+                            client.reply(from, `minimal durasi 1 menit.`, id)
                         } else {
                             client.reply(from, 'Tunggu sebentar, file sedang kami proses', id)
                             client.sendFileFromUrl(from, url_audio, `${title.toLowerCase().replace(/ +/g, '_')}.mp3`, '', null, null, true)
@@ -299,8 +299,8 @@ const MessageHandler = async (client = new Client(), message) => {
                 Ytdl(nonOption)
                     .then(data => {
                         const { title, url_video, minute } = data
-                        if (minute >= 15) {
-                            client.reply(from, `minimal durasi 15menit.`, id)
+                        if (minute >= 1) {
+                            client.reply(from, `minimal durasi 1 menit.`, id)
                         } else {
                             client.reply(from, 'Tunggu sebentar, file sedang kami proses', id)
                             client.sendFileFromUrl(from, url_video, `${title.toLowerCase().replace(/ +/g, '_')}.mp4`, '', null, null, true)
