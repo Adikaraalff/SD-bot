@@ -17,7 +17,7 @@ const {
     Brainly,
     Jsholat,
     Translate,
-    Downloader,
+    Downloader
 } = require('./../lib')
 
 
