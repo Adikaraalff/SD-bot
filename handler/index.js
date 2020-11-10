@@ -289,9 +289,9 @@ const MessageHandler = async (client = new Client(), message) => {
                     var nonOption = quotedMsg ? quotedMsgObj.body : args.join(' ')
                     Ytdl(nonOption)
                         .then(data => {
-                            const { title, url_audio, minute } = data
-                            if (minute >= 1) {
-                                client.reply(from, `minimal durasi 1 menit.`, id)
+                            const { title, url_audio, Seconds } = data
+                            if (Seconds >= 1) {
+                                client.reply(from, `minimal durasi 1 detik.`, id)
                             } else {
                                 client.reply(from, 'Tunggu sebentar, file sedang kami proses', id)
                                 client.sendFileFromUrl(from, url_audio, `${title.toLowerCase().replace(/ +/g, '_')}.mp3`, '', null, null, true)
@@ -307,9 +307,9 @@ const MessageHandler = async (client = new Client(), message) => {
                     var nonOption = quotedMsg ? quotedMsgObj.body : args.join(' ')
                     Ytdl(nonOption)
                         .then(data => {
-                            const { title, url_video, minute } = data
-                            if (minute >= 1) {
-                                client.reply(from, `minimal durasi 1 menit.`, id)
+                            const { title, url_video, Seconds } = data
+                            if (Seconds >= 1) {
+                                client.reply(from, `minimal durasi 1 detik.`, id)
                             } else {
                                 client.reply(from, 'Tunggu sebentar, file sedang kami proses', id)
                                 client.sendFileFromUrl(from, url_video, `${title.toLowerCase().replace(/ +/g, '_')}.mp4`, '', null, null, true)
