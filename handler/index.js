@@ -4,7 +4,6 @@ const _ = require('lodash')
 
 const {
     Ytdl,
-    Igdl,
     Wiki,
     About,
     Menu,
@@ -14,7 +13,7 @@ const {
     Cuaca,
     Quotes,
     QrMaker,
-    Gquotes,
+    Quotesmaker,
     Brainly,
     Jsholat,
     Translate,
@@ -98,59 +97,62 @@ const MessageHandler = async (client = new Client(), message) => {
                 insert(author, type, content, pushname, from, argv)
                 break
             case 'add':
-                if (isGroupMsg && isGroupAdmins) {
-
-                    var invalid = 'number is not valid:\n\n'
-                    if (typeof args.join(' ') === 'undefined') { client.reply(from, 'harap masukan nomor.', id) }
-                    const datamember = args.join(' ').split(' ').join('@c.us ').split(' ')
-
-                    const loop = async (i) => {
-                        if (datamember[i]) {
-                            const check = await client.checkNumberStatus(datamember[i])
-                            if (check.status != 200) {
-                                console.log(check.id.user)
-                                //client.sendText(from, `not a whatsapp number: ${check.id.user}`)
-                            } else {
-                                client.addParticipant(groupId, `${check.id._serialized}`)
+                    if (isGroupMsg && isGroupAdmins) {
+    
+                        var invalid = 'number is not valid:\n\n'
+                        if (typeof args.join(' ') === 'undefined') { client.reply(from, 'harap masukan nomor.', id) }
+                        const datamember = args.join(' ').split(' ').join('@c.us ').split(' ')
+    
+                        const loop = async (i) => {
+                            if (datamember[i]) {
+                                const check = await client.checkNumberStatus(datamember[i])
+                                if (check.status != 200) {
+                                    console.log(check.id.user)
+                                    //client.sendText(from, `not a whatsapp number: ${check.id.user}`)
+                                } else {
+                                    client.addParticipant(groupId, `${check.id._serialized}`)
+                                }
+                                setTimeout(() => {
+                                    loop(i + 1)
+                                }, 20000)
                             }
-                            setTimeout(() => {
-                                loop(i + 1)
-                            }, 20000)
                         }
+    
+                        await client.reply(from, `Add member by *SD-bot*\n\nTotal number: ${datamember.length}\nDelay: 5s.`, id)
+    
+                        loop(0)
                     }
-
-                    await client.reply(from, `Add member by *SD-bot*\n\nTotal number: ${datamember.length}\nDelay: 5s.`, id)
-
-                    loop(0)
-                }
-                insert(author, type, content, pushname, from, argv)
-                break
+                    insert(author, type, content, pushname, from, argv)
             case 'kick':
-                if (isGroupMsg && isGroupAdmins) {
-                    if (_.isEmpty(mentionedJidList) === true) { client.reply(from, 'Harap tag member yang akan di kick!', id)}
-                    mentionedJidList.map(async user => {
-                        await client.removeParticipant(groupId, user)
-                    })
-                }
-                insert(author, type, content, pushname, from, argv)
+                if (!isGroupMsg) return client.reply(from, 'Fitur ini hanya bisa di gunakan dalam group', id)
+                if (!isGroupAdmins) return client.reply(from, 'Perintah ini hanya bisa di gunakan oleh admin group', id)
+                if (!isBotGroupAdmins) return client.reply(from, 'Perintah ini hanya bisa di gunakan ketika bot menjadi admin', id)
+                if (mentionedJidList.length === 0) return client.reply(from, 'Untuk menggunakan Perintah ini, kirim perintah *!kick* @tagmember', id)
+                await client.sendText(from, `Perintah diterima, mengeluarkan:\n${mentionedJidList.join('\n')}`)
+                for (let i = 0; i < mentionedJidList.length; i++) {
+                if (groupAdmins.includes(mentionedJidList[i])) return client.reply(from, mess.error.Ki, id)
+                await client.removeParticipant(groupId, mentionedJidList[i])
+            }
                 break
             case 'promote':
-                if (isGroupMsg && isGroupAdmins) {
-                    if (_.isEmpty(mentionedJidList) === true) { client.reply(from, 'Harap tag member yang akan di kick!', id)}
-                    mentionedJidList.map(async user => {
-                        await client.promoteParticipant(groupId, user)
-                    })
-                }
-                insert(author, type, content, pushname, from, argv)
+                if (!isGroupMsg) return client.reply(from, 'Fitur ini hanya bisa di gunakan dalam group', id)
+                if (!isGroupAdmins) return client.reply(from, 'Fitur ini hanya bisa di gunakan oleh admin group', id)
+                if (!isBotGroupAdmins) return client.reply(from, 'Fitur ini hanya bisa di gunakan ketika bot menjadi admin', id)
+                if (mentionedJidList.length === 0) return client.reply(from, 'Untuk menggunakan fitur ini, kirim perintah *!promote* @tagmember', id)
+                if (mentionedJidList.length >= 2) return client.reply(from, 'Maaf, perintah ini hanya dapat digunakan kepada 1 user.', id)
+                if (groupAdmins.includes(mentionedJidList[0])) return client.reply(from, 'Maaf, user tersebut sudah menjadi admin.', id)
+                await client.promoteParticipant(groupId, mentionedJidList[0])
+                await client.sendTextWithMentions(from, `Perintah diterima, menambahkan @${mentionedJidList[0]} sebagai admin.`)
                 break
             case 'demote':
-                if (isGroupMsg && isGroupAdmins) {
-                    if (_.isEmpty(mentionedJidList) === true) { client.reply(from, 'Harap tag member yang akan di kick!', id)}
-                    mentionedJidList.map(async user => {
-                        await client.promoteParticipant(groupId, user)
-                    })
-                }
-                insert(author, type, content, pushname, from, argv)
+                if (!isGroupMsg) return client.reply(from, 'Fitur ini hanya bisa di gunakan dalam group', id)
+                if (!isGroupAdmins) return client.reply(from, 'Fitur ini hanya bisa di gunakan oleh admin group', id)
+                if (!isBotGroupAdmins) return client.reply(from, 'Fitur ini hanya bisa di gunakan ketika bot menjadi admin', id)
+                if (mentionedJidList.length === 0) return client.reply(from, 'Untuk menggunakan fitur ini, kirim perintah *!demote* @tagadmin', id)
+                if (mentionedJidList.length >= 2) return client.reply(from, 'Maaf, perintah ini hanya dapat digunakan kepada 1 orang.', id)
+                if (!groupAdmins.includes(mentionedJidList[0])) return client.reply(from, 'Maaf, user tersebut tidak menjadi admin.', id)
+                await client.demoteParticipant(groupId, mentionedJidList[0])
+                await client.sendTextWithMentions(from, `Perintah diterima, menghapus jabatan @${mentionedJidList[0]}.`)
                 break
             case 'glink':
                 var link = await client.getGroupInviteLink(groupId)
@@ -170,23 +172,18 @@ const MessageHandler = async (client = new Client(), message) => {
                 insert(author, type, content, pushname, from, argv)
                 break
             case 'kickall':
-                if (isGroupMsg && isGroupAdmins) {
-                    const loop = async (i) => {
-                        if (groupMembers[i]) {
-                            await client.removeParticipant(groupId, groupMembers[i])
-                            setTimeout(() => {
-                                loop(i + 1)
-                            }, 5000)
-                        }
-                    }
-
-                    await client.reply(from, `Total member: ${groupMembers.length}, akan dikeluarkan dalam hitungan mundur 6detik.\n\nDelay: 5s`, id)
-
-                   setTimeout(() => {
-                        loop(0)
-                   }, 6000)
+            if (!isGroupMsg) return client.reply(from, 'Perintah ini hanya bisa di gunakan dalam group!', id)
+            const isGroupOwner = sender.id === chat.groupMetadata.owner
+            if (!isGroupOwner) return client.reply(from, 'Perintah ini hanya bisa di gunakan oleh Owner group', id)
+            if (!isBotGroupAdmins) return client.reply(from, 'Perintah ini hanya bisa di gunakan ketika bot menjadi admin', id)
+            const allMem = await client.getGroupMembers(groupId)
+            for (let i = 0; i < allMem.length; i++) {
+                if (groupAdmins.includes(allMem[i].id)) {
+                    console.log('Upss this is Admin group')
+                } else {
+                    await client.removeParticipant(groupId, allMem[i].id)
                 }
-                insert(author, type, content, pushname, from, argv)
+            }
                 break
             case 'admin':
                 if (isGroupMsg && isGroupAdmins) {
@@ -199,16 +196,11 @@ const MessageHandler = async (client = new Client(), message) => {
                 }
                 insert(author, type, content, pushname, from, argv)
                 break
-            case 'kickme': 
-                // client.reply(from, 'Maaf fitur di non-aktifkan sementara.', id)
-                if (isGroupMsg && isGroupAdmins) {
-                    client.sendText(from, `Invite kembali SD-bot jika dirasa dibutuhkan yah~`)
-                        .then(() => {
-                            client.leaveGroup(groupId)
-                        })
-                }
-                insert(author, type, content, pushname, from, argv)
-                break
+            case 'kickme':
+                if (!isGroupMsg) return client.reply(from, 'Perintah ini hanya bisa di gunakan dalam group', id)
+                if (!isGroupAdmins) return client.reply(from, 'Perintah ini hanya bisa di gunakan oleh admin group', id)
+                await client.sendText(from,'Sayonara, Invite kembali SD-bot jika dirasa dibutuhkan yah~').then(() => client.leaveGroup(groupId))
+                break 
             case 'del':
                 if (isGroupMsg && isGroupAdmins) {
                     if (quotedMsgObj.fromMe) {
@@ -216,6 +208,23 @@ const MessageHandler = async (client = new Client(), message) => {
                     }
                 }
                 insert(author, type, content, pushname, from, argv)
+                break
+            case 'resend':
+                    // TODO: Repost Media
+                    if (quotedMsgObj) {
+                        let encryptMedia
+                        let replyOnReply = await client.getMessageById(quotedMsgObj.id)
+                        let obj = replyOnReply.quotedMsgObj
+                        if (/ptt|audio|video|image|document|sticker/.test(quotedMsgObj.type)) {
+                            encryptMedia = quotedMsgObj
+                            if (encryptMedia.animated) encryptMedia.mimetype = ''
+                        } else if (obj && /ptt|audio|video|image/.test(obj.type)) {
+                            encryptMedia = obj
+                        } else return
+                        const _mimetype = encryptMedia.mimetype
+                        const mediaData = await decryptMedia(encryptMedia)
+                        await client.sendFile(from, `data:${_mimetype};base64,${mediaData.toString('base64')}`, 'file', ':)', encryptMedia.id)
+                    } else client.reply(from, config.msg.noMedia, id)
                 break
             case 'wiki':
                 var nonOption = quotedMsg ? quotedMsgObj.body : args.join(' ')
@@ -277,40 +286,40 @@ const MessageHandler = async (client = new Client(), message) => {
                 insert(author, type, content, pushname, from, argv)
                 break
             case 'ytmp3':
-                var nonOption = quotedMsg ? quotedMsgObj.body : args.join(' ')
-                Ytdl(nonOption)
-                    .then(data => {
-                        const { title, url_audio, minute } = data
-                        if (minute >= 1) {
-                            client.reply(from, `minimal durasi 1 menit.`, id)
-                        } else {
-                            client.reply(from, 'Tunggu sebentar, file sedang kami proses', id)
-                            client.sendFileFromUrl(from, url_audio, `${title.toLowerCase().replace(/ +/g, '_')}.mp3`, '', null, null, true)
-                        }
-                    })
-                    .catch(err => {
-                        client.reply(from, err, id)
-                        console.log(err)
-                    })
-                insert(author, type, content, pushname, from, argv)
+                    var nonOption = quotedMsg ? quotedMsgObj.body : args.join(' ')
+                    Ytdl(nonOption)
+                        .then(data => {
+                            const { title, url_audio, minute } = data
+                            if (minute >= 1) {
+                                client.reply(from, `minimal durasi 1 menit.`, id)
+                            } else {
+                                client.reply(from, 'Tunggu sebentar, file sedang kami proses', id)
+                                client.sendFileFromUrl(from, url_audio, `${title.toLowerCase().replace(/ +/g, '_')}.mp3`, '', null, null, true)
+                            }
+                        })
+                        .catch(err => {
+                            client.reply(from, err, id)
+                            console.log(err)
+                        })
+                    insert(author, type, content, pushname, from, argv)
                 break
             case 'ytmp4':
-                var nonOption = quotedMsg ? quotedMsgObj.body : args.join(' ')
-                Ytdl(nonOption)
-                    .then(data => {
-                        const { title, url_video, minute } = data
-                        if (minute >= 1) {
-                            client.reply(from, `minimal durasi 1 menit.`, id)
-                        } else {
-                            client.reply(from, 'Tunggu sebentar, file sedang kami proses', id)
-                            client.sendFileFromUrl(from, url_video, `${title.toLowerCase().replace(/ +/g, '_')}.mp4`, '', null, null, true)
-                        }
-                    })
-                    .catch(err => {
-                        client.reply(from, errr, id)
-                        console.log(err)
-                    })
-                insert(author, type, content, pushname, from, argv)
+                    var nonOption = quotedMsg ? quotedMsgObj.body : args.join(' ')
+                    Ytdl(nonOption)
+                        .then(data => {
+                            const { title, url_video, minute } = data
+                            if (minute >= 1) {
+                                client.reply(from, `minimal durasi 1 menit.`, id)
+                            } else {
+                                client.reply(from, 'Tunggu sebentar, file sedang kami proses', id)
+                                client.sendFileFromUrl(from, url_video, `${title.toLowerCase().replace(/ +/g, '_')}.mp4`, '', null, null, true)
+                            }
+                        })
+                        .catch(err => {
+                            client.reply(from, errr, id)
+                            console.log(err)
+                        })
+                    insert(author, type, content, pushname, from, argv)
                 break
             case 'tts':
                 var withOption = quotedMsg ? quotedMsgObj.body : args.splice(1).join(' ')
@@ -373,20 +382,20 @@ const MessageHandler = async (client = new Client(), message) => {
                 insert(author, type, content, pushname, from, argv)
                 break
             case 'quotesmaker':
-                var withOption = quotedMsg ? quotedMsgObj.body : args.splice(1).join(' ')
-                var split = args[0].split(/\W/g)
-                Gquotes(split[0], split[1], withOption)
-                    .then(data => {
-                        client.sendImage(from, data, 'quotes.jpg', '')
-                    })
-                    .catch(err => {
-                        console.log(err)
-                    })
-                insert(author, type, content, pushname, from, argv)
+                    var withOption = quotedMsg ? quotedMsgObj.body : args.splice(1).join(' ')
+                    var split = args[0].split(/\W/g)
+                    Quotesmaker(split[0], split[1], withOption)
+                        .then(data => {
+                            client.sendImage(from, data, 'quotes.jpg', '')
+                        })
+                        .catch(err => {
+                            console.log(err)
+                        })
+                    insert(author, type, content, pushname, from, argv)
                 break
             case 'cekjodoh':
-                var nonOption = quotedMsg ? quotedMsgObj.body : args.join(' ')
-                if (_.isEmpty(mentionedJidList) != true && mentionedJidList.length >= 2) {
+                    var nonOption = quotedMsg ? quotedMsgObj.body : args.join(' ')
+                    if (_.isEmpty(mentionedJidList) != true && mentionedJidList.length >= 2) {
                     const couple1 = await client.getContact(mentionedJidList[0])
                     const couple2 = await client.getContact(mentionedJidList[1])
                     const c1 = couple1.isBusiness ? couple1.verifiedName : couple1.pushname
@@ -414,11 +423,25 @@ const MessageHandler = async (client = new Client(), message) => {
                     })
                 insert(author, type, content, pushname, from, argv)
                 break
-            case 'igdl':
+            case '!ig':
+                if (args.length === 1) return client.reply(from, 'Kirim perintah *!ig [linkIg]* untuk contoh silahkan kirim perintah *!menu*')
+                if (!args[1].match(isUrl) && !args[1].includes('instagram.com')) return client.reply(from, mess.error.Iv, id)
+                try {
+                    client.reply(from, mess.wait, id)
+                    const resp = await get.get(`https://mhankbarbar.herokuapp.com/api/ig?url=${args[1]}&apiKey=${apiKey}`).json()
+                    if (resp.result.includes('.mp4')) {
+                        var ext = '.mp4'
+                    } else {
+                         var ext = '.jpg'
+                    }
+                    await client.sendFileFromUrl(from, resp.result, `igeh${ext}`, '', id)
+                } catch {
+                    client.reply(from, mess.error.Ig, id)
+                    }
                 break
             case 'fbdl':
                 var nonOption = quotedMsg ? quotedMsgObj.body : args.join(' ')
-                Downloader('fb', nonOption)
+                Downloader('fbdl', nonOption)
                     .then(data => {
                         console.log(data)
                         const { title, link } = data
@@ -432,7 +455,7 @@ const MessageHandler = async (client = new Client(), message) => {
                 break
             case 'pindl':
                 var nonOption = quotedMsg ? quotedMsgObj.body : args.join(' ')
-                Downloader('pin', nonOption)
+                Downloader('pindl', nonOption)
                     .then(data => {
                         const { link } = data
                         link.map(({ url }) => {
@@ -445,6 +468,14 @@ const MessageHandler = async (client = new Client(), message) => {
                     })
                 insert(author, type, content, pushname, from, argv)
                 break
+            case '!igstalk':
+                if (args.length === 1)  return client.reply(from, 'Kirim perintah *!igStalk @username*\nConntoh *!igStalk @anak_haram*', id)
+                    const stalk = await get.get(`https://mhankbarbar.herokuapp.com/api/stalk?username=${args[1]}&apiKey=${apiKey}`).json()
+                    if (stalk.error) return client.reply(from, stalk.error, id)
+                    const { Biodata, Jumlah_Followers, Jumlah_Following, Jumlah_Post, Name, Username, Profile_pic } = stalk
+                    const caps = `➸ *Nama* : ${Name}\n➸ *Username* : ${Username}\n➸ *Jumlah Followers* : ${Jumlah_Followers}\n➸ *Jumlah Following* : ${Jumlah_Following}\n➸ *Jumlah Postingan* : ${Jumlah_Post}\n➸ *Biodata* : ${Biodata}`
+                    await client.sendFileFromUrl(from, Profile_pic, 'Profile.jpg', caps, id)
+                break
             case 'lirik':
                 var nonOption = quotedMsg ? quotedMsgObj.body : args.join(' ')
                 Lirik(nonOption)
@@ -456,6 +487,31 @@ const MessageHandler = async (client = new Client(), message) => {
                         console.log(err)
                     })
                 insert(author, type, content, pushname, from, argv)
+                break
+            case '!chord':
+                if (args.length === 1) return client.reply(from, 'Kirim perintah *!chord [query]*, contoh *!chord aku bukan boneka*', id)
+                const query__ = body.slice(7)
+                const chord = await get.get(`https://mhankbarbar.herokuapp.com/api/chord?q=${query__}&apiKey=${apiKey}`).json()
+                if (chord.error) return client.reply(from, chord.error, id)
+                client.reply(from, chord.result, id)
+                break
+            case '!stickergif':
+            case '!stikergif':
+            case '!sgif':
+                        if (isMedia) {
+                            if (mimetype === 'video/mp4' && message.duration < 10 || mimetype === 'image/gif' && message.duration < 10) {
+                                const mediaData = await decryptMedia(message, uaOverride)
+                                client.reply(from, '[WAIT] Sedang di proses⏳ silahkan tunggu ± 1 min!', id)
+                                const filename = `./media/aswu.${mimetype.split('/')[1]}`
+                                await fs.writeFileSync(filename, mediaData)
+                                await exec(`gify ${filename} ./media/output.gif --fps=30 --scale=240:240`, async function (error, stdout, stderr) {
+                                    const gif = await fs.readFileSync('./media/output.gif', { encoding: "base64" })
+                                    await client.sendImageAsSticker(from, `data:image/gif;base64,${gif.toString('base64')}`)
+                                })
+                            } else (
+                                client.reply(from, '[❗] Kirim video dengan caption *!stickerGif* max 10 sec!', id)
+                            )
+                        }
                 break
             case 'stiker':
                 if (isMedia || isQuotedImage) {
