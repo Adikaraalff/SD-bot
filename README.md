@@ -30,48 +30,51 @@ after running it you need to scan the qr.
 
 ### Group menu
 
-| Name | Status |
+| Name   | Status |
 | ------ | ------ |
-| promote | ok |
-| demote | ok |
-| kick | ok |
-| kickall | ok |
-| getall | ok |
-| kickme | ok |
-| add | ok |
-| del | ok |
-| glink | ok |
+| promote|   ok   |
+| demote |   ok   |
+| kick   |   ok   |
+| kickall|   ok   |
+| getall |   ok   |
+| kickme |   ok   |
+| add    |   ok   |
+| del    |   ok   |
+| glink  |   ok   |
 
 ### Education menu
 
-| Name | Status |
-| ------ | ------ |
-| translate | ok |
-| brainly | ok |
-| wikipedia | ok |
-| Nulis | ok |
+| Name      | Status |
+| ------    | ------ |
+| translate |   ok   |
+| brainly   |   ok   |
+| wikipedia |   ok   |
+
 
 ### Downloader menu
 
-| Name | Status |
-| ------ | ------ |
-| Youtube Downloader | ok |
-| Instagram Downloader | pending |
-| Pinterest Downloader | ok |
-| Facebook Downloader | ok |
+| Name                 | Status |
+| ------               | ------ |
+| Youtube Downloader   |   ok   |
+| Instagram Downloader |   ok   |
+| Pinterest Downloader |   ok   |
+| Facebook Downloader  |   ok   |
 
 ### Other menu
 
-| Name | Status |
-| ------ | ------ |
-| Stiker | ok |
-| Auto Quotes | ok |
-| Quotes maker | ok |
-| Jadwal Sholat | ok |
-| Cek Cuaca | ok |
-| Instagram Stalker | ok |
-| Text to Speech | ok |
-| QR Maker | ok |
+| Name              | Status |
+| ------            | ------ |
+| Stiker            |   ok   |
+| Stiker Gif        |   ok   |
+| Auto Quotes       |   ok   |
+| Quotes maker      |   ok   |
+| Jadwal Sholat     |   ok   |
+| Cek Cuaca         |   ok   |
+| Instagram Stalker |   ok   |
+| Text to Speech    |   ok   |
+| QR Maker          |   ok   |
+| Chord             |   ok   |
+| Lirik             |   ok   |
 
 ### Troubleshoot
 Make sure all the necessary dependencies are installed: https://github.com/puppeteer/puppeteer/blob/main/docs/troubleshooting.md
