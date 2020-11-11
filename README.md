@@ -56,7 +56,7 @@ after running it you need to scan the qr.
 | Name                 | Status |
 | ------               | ------ |
 | Youtube Downloader   |   ok   |
-| Instagram Downloader |   ok   |
+| Instagram Downloader |  pend  |
 | Pinterest Downloader |   ok   |
 | Facebook Downloader  |   ok   |
 
@@ -73,7 +73,7 @@ after running it you need to scan the qr.
 | Instagram Stalker |   ok   |
 | Text to Speech    |   ok   |
 | QR Maker          |   ok   |
-| Chord             |   ok   |
+| Chord             |  pend  |
 | Lirik             |   ok   |
 
 ### Troubleshoot

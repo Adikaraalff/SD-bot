@@ -17,7 +17,7 @@ const {
     Brainly,
     Jsholat,
     Translate,
-    Downloader
+    Downloader,
 } = require('./../lib')
 
 
@@ -68,6 +68,22 @@ const MessageHandler = async (client = new Client(), message) => {
         var tanggal  = moment.tz('Asia/Jakarta').format('YYYY-MM-DD')
 
         insert(author, type, content, pushname, from, 'unknown')
+    
+const config = {
+        stickerGIF: {
+        fps: 30, // Lumayan
+        quality: 1, // Buriq?
+        target: '1M',
+        duration: 20 // Detik (Durasi Maksimal)
+                },
+        sizeLimit: '50', // Megabytes
+    API: {
+        mhankbarbar: {
+            url: 'https://mhankbarbar-api--nurutomo.repl.co',
+            ig: '/api/ig',
+        }
+    }
+}
 
         switch (argv) {
             case 'ping':
@@ -96,33 +112,22 @@ const MessageHandler = async (client = new Client(), message) => {
                 await client.sendText(krisar, `[krisar] dari ${pushname} (${from})\n\n${args.join(' ')}`)
                 insert(author, type, content, pushname, from, argv)
                 break
+                
             case 'add':
-                    if (isGroupMsg && isGroupAdmins) {
-    
-                        var invalid = 'number is not valid:\n\n'
-                        if (typeof args.join(' ') === 'undefined') { client.reply(from, 'harap masukan nomor.', id) }
-                        const datamember = args.join(' ').split(' ').join('@c.us ').split(' ')
-    
-                        const loop = async (i) => {
-                            if (datamember[i]) {
-                                const check = await client.checkNumberStatus(datamember[i])
-                                if (check.status != 200) {
-                                    console.log(check.id.user)
-                                    //client.sendText(from, `not a whatsapp number: ${check.id.user}`)
-                                } else {
-                                    client.addParticipant(groupId, `${check.id._serialized}`)
-                                }
-                                setTimeout(() => {
-                                    loop(i + 1)
-                                }, 20000)
-                            }
-                        }
-    
-                        await client.reply(from, `Add member by *SD-bot*\n\nTotal number: ${datamember.length}\nDelay: 5s.`, id)
-    
-                        loop(0)
+                args = args.join(' ').split(',').map(number => number.trim())
+                failed = permission([
+                    [!isGroupMsg, config.msg.notGroup],
+                    // [!isGroupAdmins, config.msg.notAdmin],
+                    [!isBotGroupAdmins, config.msg.notBotAdmin],
+                    [args.length === 0, config.msg.noArgs],
+                    [args.includes(botNumber), config.msg.self],
+                    ])
+                if (failed[0]) return client.reply(from, failed[1], id)
+                await client.sendTextWithMentions(from, config.msg.add + args.map(config.msg.listUser).join('\n'))
+                for (let i = 0; i < args.length; i++) {
+                    client.addParticipant(groupId, args[i] + '@c.us')
                     }
-                    insert(author, type, content, pushname, from, argv)
+                break
             case 'kick':
                 if (!isGroupMsg) return client.reply(from, 'Fitur ini hanya bisa di gunakan dalam group', id)
                 if (!isGroupAdmins) return client.reply(from, 'Perintah ini hanya bisa di gunakan oleh admin group', id)
@@ -262,21 +267,6 @@ const MessageHandler = async (client = new Client(), message) => {
                 })
                 insert(author, type, content, pushname, from, argv)
                 break
-            case 'toxic':
-                Toxic().then(toxic => {
-                    client.sendText(from, toxic)
-                })
-                insert(author, type, content, pushname, from, argv)
-                break
-            case 'randomanime':
-                Animhentai('anim')
-                    .then(data => {
-                        client.sendImage(from, './anim.jpg', 'anim.jpg', '')
-                    })
-                insert(author, type, content, pushname, from, argv)
-                break
-            case 'randomhentai':
-                break
             case 'translate':
                 var withOption = quotedMsg ? quotedMsgObj.body : args.splice(1).join(' ')
                 Translate(withOption, args[0])
@@ -393,51 +383,16 @@ const MessageHandler = async (client = new Client(), message) => {
                         })
                     insert(author, type, content, pushname, from, argv)
                 break
-            case 'cekjodoh':
-                    var nonOption = quotedMsg ? quotedMsgObj.body : args.join(' ')
-                    if (_.isEmpty(mentionedJidList) != true && mentionedJidList.length >= 2) {
-                    const couple1 = await client.getContact(mentionedJidList[0])
-                    const couple2 = await client.getContact(mentionedJidList[1])
-                    const c1 = couple1.isBusiness ? couple1.verifiedName : couple1.pushname
-                    const c2 = couple2.isBusiness ? couple2.verifiedName : couple2.pushname
-                    Primbon('cekjodoh', `${c1}&${c2}`)
-                        .then(data => {
-                            client.reply(from, data, id)
+            case 'ig':
+                    failed = permission([
+                        [!url, config.msg.notURL]
+                    ])
+                    if (failed[0]) return client.repl(from, failed[1], id)
+                    mhankbarbar('ig', '?url=' + encodeURIComponent(url))
+                        .then(res => res.json())
+                        .then(res => {
+                            client.sendFile(from, res.result, 'ig', '', id)
                         })
-                } else if (nonOption.split('').some(dt => /\W/g.test(dt))) {
-                    Primbon('cekjodoh', nonOption)
-                        .then(data => {
-                            client.reply(from, data, id)
-                        })
-                }
-                insert(author, type, content, pushname, from, argv)
-                break
-            case 'artinama':
-                var nonOption = quotedMsg ? quotedMsgObj.body : args.join(' ')
-                Primbon('artinama', nonOption)
-                    .then(data => {
-                        client.reply(from, `arti nama: *${nonOption}*\n\n${data}`, id)
-                    })
-                    .catch(err => {
-                        console.log(err)
-                    })
-                insert(author, type, content, pushname, from, argv)
-                break
-            case '!ig':
-                if (args.length === 1) return client.reply(from, 'Kirim perintah *!ig [linkIg]* untuk contoh silahkan kirim perintah *!menu*')
-                if (!args[1].match(isUrl) && !args[1].includes('instagram.com')) return client.reply(from, mess.error.Iv, id)
-                try {
-                    client.reply(from, mess.wait, id)
-                    const resp = await get.get(`https://mhankbarbar.herokuapp.com/api/ig?url=${args[1]}&apiKey=${apiKey}`).json()
-                    if (resp.result.includes('.mp4')) {
-                        var ext = '.mp4'
-                    } else {
-                         var ext = '.jpg'
-                    }
-                    await client.sendFileFromUrl(from, resp.result, `igeh${ext}`, '', id)
-                } catch {
-                    client.reply(from, mess.error.Ig, id)
-                    }
                 break
             case 'fbdl':
                 var nonOption = quotedMsg ? quotedMsgObj.body : args.join(' ')
@@ -468,7 +423,7 @@ const MessageHandler = async (client = new Client(), message) => {
                     })
                 insert(author, type, content, pushname, from, argv)
                 break
-            case '!igstalk':
+            case 'igstalk':
                 if (args.length === 1)  return client.reply(from, 'Kirim perintah *!igStalk @username*\nConntoh *!igStalk @anak_haram*', id)
                     const stalk = await get.get(`https://mhankbarbar.herokuapp.com/api/stalk?username=${args[1]}&apiKey=${apiKey}`).json()
                     if (stalk.error) return client.reply(from, stalk.error, id)
@@ -488,30 +443,79 @@ const MessageHandler = async (client = new Client(), message) => {
                     })
                 insert(author, type, content, pushname, from, argv)
                 break
-            case '!chord':
+            case 'chord':
                 if (args.length === 1) return client.reply(from, 'Kirim perintah *!chord [query]*, contoh *!chord aku bukan boneka*', id)
-                const query__ = body.slice(7)
-                const chord = await get.get(`https://mhankbarbar.herokuapp.com/api/chord?q=${query__}&apiKey=${apiKey}`).json()
+                const query_ = body.slice(7)
+                const chord = await get.get(`https://mhankbarbar.herokuapp.com/api/chord?q=${query_}&apiKey=${apiKey}`).json()
                 if (chord.error) return client.reply(from, chord.error, id)
                 client.reply(from, chord.result, id)
                 break
-            case '!stickergif':
-            case '!stikergif':
-            case '!sgif':
-                        if (isMedia) {
-                            if (mimetype === 'video/mp4' && message.duration < 10 || mimetype === 'image/gif' && message.duration < 10) {
-                                const mediaData = await decryptMedia(message, uaOverride)
-                                client.reply(from, '[WAIT] Sedang di proses⏳ silahkan tunggu ± 1 min!', id)
-                                const filename = `./media/aswu.${mimetype.split('/')[1]}`
-                                await fs.writeFileSync(filename, mediaData)
-                                await exec(`gify ${filename} ./media/output.gif --fps=30 --scale=240:240`, async function (error, stdout, stderr) {
-                                    const gif = await fs.readFileSync('./media/output.gif', { encoding: "base64" })
-                                    await client.sendImageAsSticker(from, `data:image/gif;base64,${gif.toString('base64')}`)
+            case (/sti(c|)kergif|gifsti(c|)ker|sgif/i, 'sgif'):
+                    // TODO: Sticker GIF
+                    if ((isMedia || isQuotedVideo || isQuotedFile) && args.length === 0) {
+                        const encryptMedia = isQuotedVideo || isQuotedFile ? quotedMsg : message
+                        const _mimetype = isQuotedVideo || isQuotedFile ? quotedMsg.mimetype : mimetype
+                        client.reply(from, config.msg.waitConvert(_mimetype.replace(/.+\//, ''), 'webp', 'Stiker itu pakai format *webp*'), id)
+                        if (/image/.test(_mimetype)) client.reply(from, config.msg.recommend(usedPrefix, 'stiker'), id)
+                        console.log(color('[WAPI]'), 'Downloading and decrypting media...')
+                        const mediaData = await decryptMedia(encryptMedia)
+                        if (_mimetype === 'image/webp') client.sendRawWebpAsSticker(from, mediaData.toString('base64'), true)
+                        let temp = './temp'
+                        let name = new Date() * 1
+                        let fileInputPath = path.join(temp, /(.+)\//.exec(_mimetype)[1], `${name}.${_mimetype.replace(/.+\//, '')}`)
+                        let fileOutputPath = path.join(temp, 'webp', `${name}.webp`)
+                        console.log(color('[fs'), `Writing media file into '${fileInputPath}'`)
+                        fs.writeFile(fileInputPath, mediaData, err => {
+                            if (err) return client.sendText(from, config.msg.error('Ada yang error saat menulis file\n\n' + err)) && console.log(color('[ERROR]', 'red'), err)
+                            // ffmpeg -y -t 5 -i <input_file> -vf "scale=512:512:flags=lanczos:force_original_aspect_ratio=decrease" -qscale 100 <output_file>.webp
+                            ffmpeg(fileInputPath)
+                                .inputOptions([
+                                    '-y',
+                                    '-t', config.stickerGIF.duration
+                                ])
+                                .complexFilter([
+                                    (config.stickerGIF.fps >= 1 ? 'fps=' + config.stickerGIF.fps + ',' : '') + 'scale=512:512:flags=lanczos:force_original_aspect_ratio=decrease,format=rgba,pad=512:512:(ow-iw)/2:(oh-ih)/2:color=#00000000,setsar=1'
+                                ])
+                                .outputOptions([
+                                    '-qscale', config.stickerGIF.quality,
+                                    '-fs', config.stickerGIF.target || '1M',
+                                    '-vcodec', 'libwebp',
+                                    // '-lossless', '1',
+                                    '-preset', 'default',
+                                    '-loop', '0',
+                                    '-an',
+                                    '-vsync', '0'
+                                ])
+                                .format('webp')
+                                .on('start', function (commandLine) {
+                                    console.log(color('[FFmpeg]'), commandLine)
                                 })
-                            } else (
-                                client.reply(from, '[❗] Kirim video dengan caption *!stickerGif* max 10 sec!', id)
-                            )
-                        }
+                                .on('progress', function (progress) {
+                                    console.log(color('[FFmpeg]'), progress, '')
+                                })
+                                .on('end', function () {
+                                    console.log(color('[FFmpeg]'), 'Processing finished!')
+                                    fs.readFile(fileOutputPath, { encoding: 'base64' }, async (err, base64) => {
+                                        if (err) return client.sendText(from, config.msg.error('Ada yang error saat membaca file .webp\n\n' + err)) && console.log(color('[ERROR]', 'red'), err)
+                                        try {
+                                            await client.sendRawWebpAsSticker(from, base64, true)
+                                        } catch (e) {
+                                            console.log(color('[ERROR]', 'red'), e)
+                                            client.sendText(from, config.msg.error('Ada yang error saat mengirim stiker\n\n' + e))
+                                        }
+                                        setTimeout(() => {
+                                            try {
+                                                fs.unlinkSync(fileInputPath)
+                                                fs.unlinkSync(fileOutputPath)
+                                            } catch (e) {
+                                                console.log(color('[ERROR]', 'red'), e)
+                                            }
+                                        }, 5000)
+                                    })
+                                })
+                                .save(fileOutputPath)
+                        })
+                    }
                 break
             case 'stiker':
                 if (isMedia || isQuotedImage) {
