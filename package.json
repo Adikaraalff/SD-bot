@@ -4,9 +4,10 @@
   "main": "index.js",
   "scripts": {
     "start": "node ./index"
+
   },
   "dependencies": {
-    "@open-wa/wa-automate": "^3.0.14",
+    "@open-wa/wa-automate": "^2.0.28",
     "@vitalets/google-translate-api": "^4.0.0",
     "dotenv": "^8.2.0",
     "html-to-json": "^0.6.0",
