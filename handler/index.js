@@ -254,8 +254,8 @@ const MessageHandler = async (client = new Client(), message) => {
                 const chatz = await client.getAllChatIds()
                 for (let idk of chatz) {
                     var cvk = await client.getChatById(idk)
-                    if (!cvk.isReadOnly) client.sendText(idk, `〘 *S D  B C* 〙\n\n${msg}`)
-                    if (cvk.isReadOnly) client.sendText(idk, `〘 *S D  B C* 〙\n\n${msg}`)
+                    if (!cvk.isReadOnly) client.sendText(idk, `[📡]--- SD BROADCAST ---[📡]\n\n${msg}`)
+                    if (cvk.isReadOnly) client.sendText(idk, `[📡]--- SD BROADCAST ---[📡]\n\n${msg}`)
                 }
                 client.reply(from, 'Broadcast Success!', id)
                 break
