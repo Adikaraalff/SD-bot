@@ -3,8 +3,8 @@
 # SD-BOT WHATSAPP
 <details>
  <summary>Help me!</summary>
-
- [Paypal.me](https://paypal.me/Adikaraalf)
+ [Saweria.co] (https://saweria.co/SDBot)
+ [Paypal.me] (https://paypal.me/Adikaraalf)
 
 </details>
 </div>
@@ -36,7 +36,7 @@ after running it you need to scan the qr.
 | demote |   ok   |
 | kick   |   ok   |
 | kickall|   ok   |
-| getall |   ok   |
+| tagall |   ok   |
 | kickme |   ok   |
 | add    |   ok   |
 | del    |   ok   |
@@ -57,8 +57,7 @@ after running it you need to scan the qr.
 | ------               | ------ |
 | Youtube Downloader   |   ok   |
 | Instagram Downloader |  pend  |
-| Pinterest Downloader |   ok   |
-| Facebook Downloader  |   ok   |
+| Facebook Downloader  |  pend  |
 
 ### Other menu
 
@@ -73,8 +72,9 @@ after running it you need to scan the qr.
 | Instagram Stalker |   ok   |
 | Text to Speech    |   ok   |
 | QR Maker          |   ok   |
-| Chord             |  pend  |
+| Chord             |   ok   |
 | Lirik             |   ok   |
+
 
 ### Troubleshoot
 Make sure all the necessary dependencies are installed: https://github.com/puppeteer/puppeteer/blob/main/docs/troubleshooting.md
